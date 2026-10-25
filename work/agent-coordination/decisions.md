@@ -1,7 +1,7 @@
 # 跨 agent 决策记录（append-only）
 
 ## D-001 2026-10-25 技术选型
-按 `interfaces.md §0`。理由：与既有 `mcd-mcp/mcd.py`（纯标准库）保持一致，保证新环境零依赖可复现；避免引入前端构建链导致现场演示失败。
+按 `interfaces.md §0`。理由：与开发期既有的 MCP 直连脚本（纯标准库）保持一致，保证新环境零依赖可复现；避免引入前端构建链导致现场演示失败。
 
 ## D-002 2026-10-25 MCP 只读链路实测结论（阶段2 前置，已由 orchestrator 验证）
 - `query-nearby-stores`（beType=1，searchType=2，city+keyword）→ 返回 storeCode / reservationTimeOptions，可用。

@@ -95,7 +95,7 @@
 | 多智能体协作状态、决策记录、冻结接口 | `work/agent-coordination/`（status.md / decisions.md / interfaces.md） |
 | MCP 实测证据（脱敏） | `docs/MCP联调记录.md`、`docs/MCP能力矩阵.md` |
 | 测试与审查记录 | `docs/测试报告.md`、`docs/后端代码审查报告.md`、`docs/审查问题核实与修复记录.md` |
-| 阶段交付物对照 | `docs/实现与规划对照.md`、`麦麦同席-项目规划.md` |
+| 阶段交付物对照 | `docs/实现与规划对照.md`（逐条对应《麦麦同席-项目规划.md》v1.0 的目标与验收标准） |
 | 界面与导出截图 | `docs/screenshots/`（24 张） |
 
 ## 五、真实性说明

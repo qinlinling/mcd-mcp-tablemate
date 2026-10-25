@@ -6,7 +6,7 @@
 
 | 层 | 选型 | 理由 |
 |---|---|---|
-| 运行时 | Python 3 标准库（无第三方依赖） | 与仓库既有 `mcd-mcp/mcd.py` 一致，新环境可直接跑 |
+| 运行时 | Python 3 标准库（无第三方依赖） | 与开发期 MCP 直连工具一致，新环境可直接跑 |
 | 后端 | `http.server.ThreadingHTTPServer` 自建 REST | 无框架依赖，便于评委本地复现 |
 | 前端 | 原生 HTML/CSS/JS，无构建步骤 | 双击即开，减少环境风险 |
 | MCP 接入 | JSON-RPC over HTTP，直连 `https://mcp.mcd.cn` | 已实测可用，token 复用 `~/.workbuddy/mcp.json` |
