@@ -1,0 +1,94 @@
+{
+  "_readme": "标准测试场景集（规划 E01）。party 字段与接口一致；月于回归断言：硬约束必须守住、分摊总额等于整单、不出现无法解释的未满足项。",
+  "cases": [
+    {
+      "id": "C1",
+      "name": "标准演示：4 人，指定主食 + 不吃辣 + 个人预算 + 共同预算冲突",
+      "party": {
+        "title": "周五项目庆功",
+        "memberCount": 4,
+        "store": {"storeCode": "1450713", "storeName": "麦当劳上海黄浦华旭国际大厦餐厅",
+                  "beType": 1, "orderType": 1, "beCode": null, "reservationDate": ""},
+        "budgetTotal": 200,
+        "members": [
+          {"id": "m1", "nickname": "小北", "budget": 45, "must": ["麦辣鸡腿堡"], "nice": ["薯条"], "never": []},
+          {"id": "m2", "nickname": "阿岚", "budget": 40, "must": ["鸡块"], "nice": ["玉米杯"], "never": ["辣"]},
+          {"id": "m3", "nickname": "大可", "budget": 60, "must": ["巨无霸"], "nice": ["可乐"], "never": []},
+          {"id": "m4", "nickname": "糖糖", "budget": 35, "must": ["麦旋风"], "nice": [], "never": ["牛肉"]}
+        ]
+      }
+    },
+    {
+      "id": "C2",
+      "name": "3 人，两人不吃辣，一人必须辣味汉堡（硬约束与心愿直接冲突）",
+      "party": {
+        "title": "加班宵夜",
+        "memberCount": 3,
+        "store": {"storeCode": "1450713", "storeName": "麦当劳上海黄浦华旭国际大厦餐厅",
+                  "beType": 1, "orderType": 1, "beCode": null, "reservationDate": ""},
+        "budgetTotal": 120,
+        "members": [
+          {"id": "m1", "nickname": "老周", "budget": null, "must": ["麦辣鸡腿堡"], "nice": [], "never": []},
+          {"id": "m2", "nickname": "小林", "budget": null, "must": [], "nice": ["薯条"], "never": ["辣"]},
+          {"id": "m3", "nickname": "阿紫", "budget": null, "must": [], "nice": [], "never": ["辣"]}
+        ]
+      }
+    },
+    {
+      "id": "C3",
+      "name": "6 人预算紧张：共同预算低于人均 30 元",
+      "party": {
+        "title": "宿舍拼单",
+        "memberCount": 6,
+        "store": {"storeCode": "1450713", "storeName": "麦当劳上海黄浦华旭国际大厦餐厅",
+                  "beType": 1, "orderType": 1, "beCode": null, "reservationDate": ""},
+        "budgetTotal": 150,
+        "members": [
+          {"id": "m1", "nickname": "一号床", "budget": 25, "must": [], "nice": ["可乐"], "never": []},
+          {"id": "m2", "nickname": "二号床", "budget": 25, "must": [], "nice": [], "never": ["辣"]},
+          {"id": "m3", "nickname": "三号床", "budget": 25, "must": ["薯条"], "nice": [], "never": []},
+          {"id": "m4", "nickname": "四号床", "budget": 25, "must": [], "nice": [], "never": ["牛肉"]},
+          {"id": "m5", "nickname": "五号床", "budget": 25, "must": [], "nice": [], "never": []},
+          {"id": "m6", "nickname": "六号床", "budget": 25, "must": [], "nice": [], "never": ["咖啡"]}
+        ]
+      }
+    },
+    {
+      "id": "C4",
+      "name": "8 人上限：多人重复同一心愿，检验合并与分账",
+      "party": {
+        "title": "小组团建",
+        "memberCount": 8,
+        "store": {"storeCode": "1450713", "storeName": "麦当劳上海黄浦华旭国际大厦餐厅",
+                  "beType": 1, "orderType": 1, "beCode": null, "reservationDate": ""},
+        "budgetTotal": 400,
+        "members": [
+          {"id": "m1", "nickname": "甲", "budget": 50, "must": ["麦辣鸡腿堡"], "nice": [], "never": []},
+          {"id": "m2", "nickname": "乙", "budget": 50, "must": ["麦辣鸡腿堡"], "nice": [], "never": []},
+          {"id": "m3", "nickname": "丙", "budget": 50, "must": ["麦辣鸡腿堡"], "nice": [], "never": []},
+          {"id": "m4", "nickname": "丁", "budget": 50, "must": ["巨无霸"], "nice": [], "never": []},
+          {"id": "m5", "nickname": "戊", "budget": 50, "must": ["巨无霸"], "nice": [], "never": []},
+          {"id": "m6", "nickname": "己", "budget": 50, "must": [], "nice": ["薯条"], "never": []},
+          {"id": "m7", "nickname": "庚", "budget": 50, "must": [], "nice": [], "never": ["辣"]},
+          {"id": "m8", "nickname": "辛", "budget": 50, "must": [], "nice": [], "never": []}
+        ]
+      }
+    },
+    {
+      "id": "C5",
+      "name": "心愿全部无法匹配：菜单没有的菜名（检验不编造）",
+      "party": {
+        "title": "想吃点别的",
+        "memberCount": 3,
+        "store": {"storeCode": "1450713", "storeName": "麦当劳上海黄浦华旭国际大厦餐厅",
+                  "beType": 1, "orderType": 1, "beCode": null, "reservationDate": ""},
+        "budgetTotal": 130,
+        "members": [
+          {"id": "m1", "nickname": "安安", "budget": null, "must": ["佛跳墙"], "nice": ["龙虾"], "never": []},
+          {"id": "m2", "nickname": "宝宝", "budget": null, "must": [], "nice": [], "never": ["香菜"]},
+          {"id": "m3", "nickname": "超超", "budget": null, "must": [], "nice": [], "never": []}
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" href="data:," />
+<title>麦麦同席 · 一起点好，一起留下</title>
+<meta name="description" content="麦麦同席：多人协作点餐与同桌食光票根。官方核价，只读优先，不自动下单。" />
+<meta name="theme-color" content="#DA291C" />
+<meta name="color-scheme" content="light" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<a class="skip-link" href="#stage">跳到主要内容</a>
+
+<!-- ===== 图标 sprite（内联 SVG，无外部依赖） ===== -->
+<svg class="icon-sprite" aria-hidden="true" focusable="false" width="0" height="0">
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm7.5.5a2.8 2.8 0 1 0 0-5.6 2.8 2.8 0 0 0 0 5.6ZM2.5 19.5c0-3.2 2.9-5.3 6.5-5.3s6.5 2.1 6.5 5.3v.5h-13v-.5Zm13.2-4.7c2.9.2 5.3 2 5.3 4.7v.5h-4.4v-.5c0-1.9-.6-3.5-1.6-4.7h.7Z"/></symbol>
+  <symbol id="i-store" viewBox="0 0 24 24"><path d="M3 9.5 4.6 4h14.8L21 9.5a3 3 0 0 1-5.2 2.1A3 3 0 0 1 12 11a3 3 0 0 1-3.8.6A3 3 0 0 1 3 9.5ZM4.5 13v7h6v-5h3v5h6v-7a4.4 4.4 0 0 1-3.8-.7 4.4 4.4 0 0 1-3.7.6 4.4 4.4 0 0 1-3.7-.6 4.4 4.4 0 0 1-3.8.7Z"/></symbol>
+  <symbol id="i-cart" viewBox="0 0 24 24"><path d="M2 3h3l2.6 10.6A2 2 0 0 0 9.5 15H18a2 2 0 0 0 1.9-1.5L21.5 7H6.2M9.5 20a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Zm8 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M4 12.5 9.5 18 20 6.5"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.4 11 15.4 16.4 9.4"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3.5 21.5 20H2.5L12 3.5Z"/><path d="M12 9.5v4.2"/><circle cx="12" cy="16.8" r=".9" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-x-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 2.5 13.8 9l6.2 1.9L13.9 13 12 19.5 10.1 13 4 11l6.1-1.9L12 2.5Z"/><path d="M18.5 3v3.6M16.7 4.8h3.6"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3.5v10.6M8 10.6l4 4 4-4M4.5 19.5h15"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.5-5.8"/><path d="M20 4v4.5h-4.5"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 6.5h16M9.5 6.5V4h5v2.5M6 6.5 7 20h10l1-13.5M10 10v6M14 10v6"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5.4l3.4 2"/></symbol>
+  <symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8.6 8.5 12 12.4l3.4-3.9M12 12.4V17M9.4 13.4h5.2M9.4 15.6h5.2"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6"/><circle cx="12" cy="7.8" r=".95" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-ticket" viewBox="0 0 24 24"><path d="M3 8.5V6h18v2.5a3.5 3.5 0 0 0 0 7V18H3v-2.5a3.5 3.5 0 0 0 0-7Z"/><path d="M14.5 6v12" stroke-dasharray="2 2.6"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4.5" y="10" width="15" height="10.5" rx="2.5"/><path d="M8.2 10V7.6a3.8 3.8 0 0 1 7.6 0V10"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="M9 5.5 16 12l-7 6.5"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v2.4M12 18.8v2.4M4.6 4.6l1.7 1.7M17.7 17.7l1.7 1.7M2.8 12h2.4M18.8 12h2.4M4.6 19.4l1.7-1.7M17.7 6.3l1.7-1.7"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.4 15.4 21 21"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24"><path d="M6 21V3.5M6 4h11l-1.8 4.2L17 12.5H6"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3.6 2.7 5.6 6.1.8-4.5 4.3 1.1 6.1-5.4-3-5.4 3 1.1-6.1L3.2 10l6.1-.8L12 3.6Z"/></symbol>
+</svg>
+
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ===== 顶栏 ===== -->
+<header class="topbar">
+  <div class="topbar__inner">
+    <a class="brand" href="#" id="brandHome" aria-label="回到第一步">
+      <span class="brand__mark" aria-hidden="true">
+        <span class="brand__arch"></span>
+        <span class="brand__dot"></span>
+      </span>
+      <span class="brand__text">
+        <strong>麦麦同席</strong>
+        <em>一起点好，一起留下</em>
+      </span>
+    </a>
+
+    <div class="topbar__meta">
+      <span class="chip chip--ghost" id="dataTimeChip" title="该时点为最近一次官方数据时点">
+        <svg class="ico" aria-hidden="true"><use href="#i-clock"></use></svg>
+        <span id="dataTimeText">数据时点 —</span>
+      </span>
+      <span class="chip chip--safe" title="本作品不会自动下单、不会领券、不会支付">
+        <svg class="ico" aria-hidden="true"><use href="#i-lock"></use></svg>
+        <span>只读 · 不下单</span>
+      </span>
+      <button type="button" class="icon-btn" id="openDrawer" aria-label="打开设置与数据说明" aria-controls="drawer" aria-expanded="false">
+        <svg class="ico" aria-hidden="true"><use href="#i-settings"></use></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ===== 全局横幅（离线回放 / 健康状态） ===== -->
+<div class="banner-slot">
+  <div class="banner banner--warn" id="replayBanner" hidden>
+    <svg class="ico" aria-hidden="true"><use href="#i-alert"></use></svg>
+    <span><strong>离线回放 · 非实时数据</strong><br />当前展示的是本地历史缓存，价格与库存可能已变化，仅用于演示流程。</span>
+  </div>
+  <div class="banner banner--error" id="healthBanner" hidden>
+    <svg class="ico" aria-hidden="true"><use href="#i-x-circle"></use></svg>
+    <span><strong>后端未就绪</strong> <span id="healthBannerText">无法连接 /api/health。</span></span>
+    <button type="button" class="btn btn--xs btn--ghost" id="retryHealth">重试</button>
+  </div>
+  <div class="banner banner--info" id="revisitBanner" hidden>
+    <svg class="ico" aria-hidden="true"><use href="#i-info"></use></svg>
+    <span id="revisitBannerText"></span>
+    <button type="button" class="icon-btn icon-btn--xs" id="closeRevisitBanner" aria-label="关闭这条提示">
+      <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+    </button>
+  </div>
+</div>
+
+<!-- ===== 步骤条 ===== -->
+<nav class="steps" aria-label="流程步骤">
+  <ol class="steps__list" id="stepNav">
+    <li class="step" data-step="1"><button type="button" class="step__btn"><span class="step__num">1</span><span class="step__label">创建聚餐</span></button></li>
+    <li class="step" data-step="2"><button type="button" class="step__btn"><span class="step__num">2</span><span class="step__label">成员心愿</span></button></li>
+    <li class="step" data-step="3"><button type="button" class="step__btn"><span class="step__num">3</span><span class="step__label">三案对比</span></button></li>
+    <li class="step" data-step="4"><button type="button" class="step__btn"><span class="step__num">4</span><span class="step__label">调整与确认</span></button></li>
+    <li class="step" data-step="5"><button type="button" class="step__btn"><span class="step__num">5</span><span class="step__label">同桌票根</span></button></li>
+  </ol>
+</nav>
+
+<main class="stage" id="stage" tabindex="-1">
+
+  <!-- ============ 步骤 1：创建聚餐 ============ -->
+  <section class="panel" id="panel-1" data-panel="1" aria-labelledby="h1">
+    <div class="panel__head panel__head--hero">
+      <div class="hero__content">
+        <p class="eyebrow"><span class="eyebrow__line" aria-hidden="true"></span>一起点好，一起留下</p>
+        <h1 id="h1">这顿饭，<span>为谁而点？</span></h1>
+        <p class="lede">把每个人的心愿、忌口和预算放在同一张桌上。<br />先点好这一餐，再留下这一刻。</p>
+        <ul class="hero__proof" aria-label="产品特点">
+          <li><svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>3—8 人协作</li>
+          <li><svg class="ico" aria-hidden="true"><use href="#i-check-circle"></use></svg>官方实时核价</li>
+          <li><svg class="ico" aria-hidden="true"><use href="#i-ticket"></use></svg>隐私友好票根</li>
+        </ul>
+      </div>
+      <button type="button" class="btn btn--yellow btn--lg hero__demo" id="fillDemo">
+        <svg class="ico" aria-hidden="true"><use href="#i-sparkle"></use></svg>
+        填入标准演示场景
+      </button>
+      <span class="hero__arches" aria-hidden="true"></span>
+    </div>
+
+    <div class="revisit-box" id="revisitBox" hidden>
+      <div class="revisit-box__head">
+        <h2 class="revisit-box__title">
+          <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+          上次这群人
+        </h2>
+        <p class="revisit-box__hint">只带入心愿，不含个人预算；门店与价格必须按这次重新选、重新核价。</p>
+      </div>
+      <div class="revisit-track" id="revisitList"></div>
+      <button type="button" class="btn btn--ghost btn--sm revisit-more" id="revisitMore" hidden>查看全部</button>
+    </div>
+
+    <form class="card card--form" id="formParty" novalidate>
+      <h2 class="form-section-title"><span>01</span>聚餐信息</h2>
+      <div class="grid grid--2">
+        <label class="field">
+          <span class="field__label">聚餐事由 / 名称</span>
+          <input type="text" id="fTitle" maxlength="30" value="周五项目庆功" placeholder="如：周五项目庆功" autocomplete="off" />
+          <span class="field__hint">1—30 字，会出现在票根上。</span>
+        </label>
+
+        <div class="field">
+          <span class="field__label">人数</span>
+          <div class="stepper" role="group" aria-label="聚餐人数">
+            <button type="button" class="stepper__btn" data-count="-1" aria-label="减少人数"><svg class="ico" aria-hidden="true"><use href="#i-minus"></use></svg></button>
+            <input type="number" id="fMemberCount" min="3" max="8" step="1" value="4" inputmode="numeric" aria-label="人数" />
+            <button type="button" class="stepper__btn" data-count="1" aria-label="增加人数"><svg class="ico" aria-hidden="true"><use href="#i-plus"></use></svg></button>
+            <span class="stepper__unit">人（3—8）</span>
+          </div>
+          <span class="field__hint">人数决定分账口径，之后也可切换。</span>
+        </div>
+      </div>
+
+      <fieldset class="fieldset">
+        <legend class="form-section-title"><span>02</span>选择门店</legend>
+        <div class="store-search">
+          <label class="field field--inline">
+            <span class="sr-only">城市</span>
+            <input type="text" id="fCity" value="上海" placeholder="城市，如 上海" autocomplete="off" />
+          </label>
+          <label class="field field--inline field--grow">
+            <span class="sr-only">商圈关键词</span>
+            <input type="text" id="fKeyword" value="人民广场" placeholder="商圈 / 地标，如 人民广场" autocomplete="off" />
+          </label>
+          <button type="button" class="btn btn--primary" id="btnFindStores">
+            <svg class="ico" aria-hidden="true"><use href="#i-search"></use></svg>
+            查询门店
+          </button>
+        </div>
+        <div class="inline-status" id="storeStatus" role="status" aria-live="polite"></div>
+        <ul class="store-list" id="storeList" aria-label="门店查询结果"></ul>
+      </fieldset>
+
+      <h2 class="form-section-title form-section-title--preferences"><span>03</span>聚餐偏好</h2>
+      <div class="grid grid--3">
+        <div class="field">
+          <span class="field__label">取餐方式</span>
+          <div class="segmented" role="radiogroup" aria-label="取餐方式">
+            <label class="segmented__opt">
+              <input type="radio" name="beType" value="1" checked />
+              <span>到店自取</span>
+            </label>
+            <label class="segmented__opt">
+              <input type="radio" name="beType" value="5" />
+              <span>得来速</span>
+            </label>
+          </div>
+          <span class="field__hint">得来速需门店支持，菜单可能不同。</span>
+        </div>
+
+        <label class="field">
+          <span class="field__label">预约时间 <span class="opt">可选</span></span>
+          <input type="text" id="fReservation" placeholder="如 2026-10-25 18:30" autocomplete="off" />
+          <span class="field__hint">仅作为核价的取餐时间参考，不会创建订单。</span>
+        </label>
+
+        <label class="field">
+          <span class="field__label">共同预算（元）</span>
+          <div class="input-suffix">
+            <input type="number" id="fBudget" min="1" step="1" value="200" inputmode="decimal" />
+            <span class="input-suffix__unit">元</span>
+          </div>
+          <span class="field__hint">整单上限，用于校验方案是否超支。</span>
+        </label>
+      </div>
+
+      <div class="form-foot">
+        <p class="form-foot__tip" id="formTip">选好门店后即可进入下一步。</p>
+        <button type="submit" class="btn btn--primary btn--lg" id="btnCreateParty">
+          下一步：收集心愿
+          <svg class="ico" aria-hidden="true"><use href="#i-chevron"></use></svg>
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <!-- ============ 步骤 2：成员心愿 ============ -->
+  <section class="panel" id="panel-2" data-panel="2" aria-labelledby="h2" hidden>
+    <div class="panel__head">
+      <div>
+        <p class="eyebrow">第二步 · <span id="partyTitleEcho">周五项目庆功</span></p>
+        <h2 id="h2">同设备轮流填写心愿</h2>
+        <p class="lede">「不要」是硬约束，系统不会为了更便宜而突破它。</p>
+      </div>
+      <div class="switch-view">
+        <button type="button" class="btn btn--ghost" id="toggleAllMembers">全部展开编辑</button>
+      </div>
+    </div>
+
+    <div class="member-progress" id="memberProgress" aria-live="polite"></div>
+
+    <div class="member-stage" id="memberStage"></div>
+
+    <div class="panel__foot">
+      <button type="button" class="btn btn--ghost" id="backTo1">返回修改聚餐</button>
+      <div class="panel__foot-right">
+        <span class="foot-note" id="memberFootNote"></span>
+        <button type="button" class="btn btn--primary btn--lg" id="btnGoPlans">
+          生成三套方案
+          <svg class="ico" aria-hidden="true"><use href="#i-chevron"></use></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 步骤 3：三案对比 ============ -->
+  <section class="panel" id="panel-3" data-panel="3" aria-labelledby="h3" hidden>
+    <div class="panel__head">
+      <div>
+        <p class="eyebrow">第三步 · 官方核价</p>
+        <h2 id="h3">三套方案，各有取舍</h2>
+        <p class="lede">三种明确策略。若结果收敛，我们如实说明原因，不制造无效差异。</p>
+      </div>
+      <div class="panel__head-actions">
+        <span class="stamp" id="planTimeStamp">
+          <svg class="ico" aria-hidden="true"><use href="#i-clock"></use></svg>
+          数据时点 —
+        </span>
+        <button type="button" class="btn btn--ghost" id="btnRegenPlans">
+          <svg class="ico" aria-hidden="true"><use href="#i-refresh"></use></svg>
+          重新生成
+        </button>
+      </div>
+    </div>
+
+    <div class="inline-status" id="planStatus" role="status" aria-live="polite"></div>
+    <div class="plan-grid" id="planGrid"></div>
+
+    <div class="panel__foot">
+      <button type="button" class="btn btn--ghost" id="backTo2">返回心愿</button>
+      <span class="foot-note">选定方案后可继续增减餐品并复算。</span>
+    </div>
+  </section>
+
+  <!-- ============ 步骤 4：调整与确认 ============ -->
+  <section class="panel" id="panel-4" data-panel="4" aria-labelledby="h4" hidden>
+    <div class="panel__head">
+      <div>
+        <p class="eyebrow">第四步 · <span id="editPlanName">方案</span></p>
+        <h2 id="h4">调整这一桌</h2>
+        <p class="lede">每改一次，都要重新向官方核价；旧价格会在复算完成前失效。</p>
+      </div>
+      <div class="panel__head-actions">
+        <span class="stamp" id="editQuoteStamp">
+          <svg class="ico" aria-hidden="true"><use href="#i-clock"></use></svg>
+          核价时点 —
+        </span>
+        <button type="button" class="btn btn--ghost" id="backTo3">换一个方案</button>
+      </div>
+    </div>
+
+    <div class="recalc-strip" id="recalcStrip" hidden>
+      <span class="spinner" aria-hidden="true"></span>
+      <span>核价中…旧金额已置为无效，请稍候。</span>
+    </div>
+    <div class="banner banner--error" id="recalcError" hidden>
+      <svg class="ico" aria-hidden="true"><use href="#i-x-circle"></use></svg>
+      <span><strong>核价失败</strong> <span id="recalcErrorText"></span> 当前清单无有效价格，请调整或重试。</span>
+    </div>
+
+    <div class="edit-layout">
+      <div class="edit-left">
+        <div class="card card--table">
+          <h3 class="card__title">这一桌</h3>
+          <div id="tableSceneMount"></div>
+          <p class="card__hint">餐盘颜色与座位卡一致，虚线连到归属成员；虚线盘为共享项。</p>
+        </div>
+
+        <div class="card card--items">
+          <div class="card__title-row">
+            <h3 class="card__title">餐品清单</h3>
+            <span class="pill" id="itemCount">—</span>
+          </div>
+          <div class="item-editor" id="itemEditor"></div>
+        </div>
+
+        <div class="card card--bill">
+          <h3 class="card__title">分账表</h3>
+          <div class="bill-summary" id="billSummary"></div>
+          <div class="table-wrap">
+            <table class="bill" id="billTable">
+              <thead>
+                <tr>
+                  <th scope="col">成员</th>
+                  <th scope="col" class="num">归属小计</th>
+                  <th scope="col" class="num">共享分摊</th>
+                  <th scope="col" class="num">优惠分摊</th>
+                  <th scope="col" class="num">应付</th>
+                </tr>
+              </thead>
+              <tbody id="billBody"></tbody>
+              <tfoot id="billFoot"></tfoot>
+            </table>
+          </div>
+          <p class="bill__sum-check" id="billSumCheck"></p>
+        </div>
+      </div>
+
+      <aside class="edit-right">
+        <div class="card card--menu">
+          <div class="card__title-row">
+            <h3 class="card__title">从菜单添加</h3>
+            <span class="pill" id="menuCount">—</span>
+          </div>
+          <label class="search">
+            <svg class="ico" aria-hidden="true"><use href="#i-search"></use></svg>
+            <input type="search" id="menuSearch" placeholder="搜索餐品名，如 麦辣 / 薯条" autocomplete="off" />
+          </label>
+          <div class="inline-status" id="menuStatus" role="status" aria-live="polite"></div>
+          <div class="menu-list" id="menuList"></div>
+        </div>
+
+        <div id="confirmBox"></div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ============ 步骤 5：同桌票根 ============ -->
+  <section class="panel" id="panel-5" data-panel="5" aria-labelledby="h5" hidden>
+    <div class="panel__head">
+      <div>
+        <p class="eyebrow">第五步 · 分享前预览</p>
+        <h2 id="h5">同桌票根</h2>
+        <p class="lede">默认隐藏订单号、门店详址、个人预算与分摊。昵称与展示字段都由你决定。</p>
+      </div>
+      <div class="panel__head-actions">
+        <button type="button" class="btn btn--ghost" id="backTo4">返回调整</button>
+        <span class="export-size" id="exportSizeHint">竖版 · 1080 宽 · 高度随内容</span>
+        <button type="button" class="btn btn--ghost btn--sm" id="btnPreviewExport" disabled
+                title="生成一张与下载完全一致的图片">查看导出效果</button>
+        <button type="button" class="btn btn--primary" id="btnDownload" disabled>
+          <svg class="ico" aria-hidden="true"><use href="#i-download"></use></svg>
+          下载图片
+        </button>
+      </div>
+    </div>
+
+    <div class="ticket-layout">
+      <div class="ticket-preview-wrap">
+        <div class="ticket-preview" id="ticketPreview" aria-live="polite">
+          <p class="muted">正在生成票根…</p>
+        </div>
+        <p class="ticket-preview-note">预览按屏幕宽度等比缩放；下载为 1080 宽、2 倍像素。</p>
+      </div>
+
+      <aside class="ticket-controls">
+        <div class="card">
+          <h3 class="card__title">展示字段</h3>
+          <div class="check-grid" id="fieldToggles"></div>
+        </div>
+
+        <div class="card">
+          <h3 class="card__title">改写昵称</h3>
+          <p class="card__hint">只影响票根，不改动聚餐成员数据。</p>
+          <div class="nick-list" id="nickEditor"></div>
+        </div>
+
+        <div class="card">
+          <h3 class="card__title">合照 <span class="opt">可选</span></h3>
+          <p class="card__hint">只存在本机这次聚餐记录里；导出时才画进图片。长边会压到 1200px 以内。</p>
+          <div class="photo-pick">
+            <input type="file" id="photoInput" class="photo-pick__input" accept="image/*" />
+            <label class="btn btn--ghost btn--sm photo-pick__label" for="photoInput">选择照片</label>
+            <button type="button" class="btn btn--ghost btn--sm" id="btnRemovePhoto" hidden>移除照片</button>
+          </div>
+          <div class="photo-preview" id="photoPreview" hidden>
+            <img id="photoPreviewImg" alt="合照预览" />
+          </div>
+          <p class="inline-status" id="photoStatus" role="status" aria-live="polite"></p>
+        </div>
+
+        <div class="card">
+          <h3 class="card__title">每人一句话 <span class="opt">可选</span></h3>
+          <p class="card__hint">最多 24 字。留空的那位不会出现在票根上。</p>
+          <div class="note-list" id="noteEditor"></div>
+        </div>
+
+        <div class="card">
+          <h3 class="card__title">下次约定 <span class="opt">可选</span></h3>
+          <label class="field">
+            <span class="sr-only">下次约定</span>
+            <input type="text" id="nextMeet" maxlength="40" placeholder="如：下周五同一家" autocomplete="off" />
+            <span class="field__hint">最多 40 字，留空则不显示。</span>
+          </label>
+        </div>
+
+        <div class="card">
+          <h3 class="card__title">一句主题</h3>
+          <label class="field">
+            <span class="sr-only">主题短句</span>
+            <input type="text" id="themeLine" maxlength="26" placeholder="如：又一次，把周五点亮了" />
+            <span class="field__hint">留空则使用默认文案，最多 26 字。</span>
+          </label>
+        </div>
+
+        <div class="card">
+          <h3 class="card__title">版式</h3>
+          <div class="segmented segmented--block layout-picker" role="radiogroup" aria-label="票根版式">
+            <label class="segmented__opt">
+              <input type="radio" name="ticketLayout" value="portrait" checked />
+              <span>竖版</span>
+            </label>
+            <label class="segmented__opt">
+              <input type="radio" name="ticketLayout" value="square" />
+              <span>方图</span>
+            </label>
+            <label class="segmented__opt">
+              <input type="radio" name="ticketLayout" value="story" />
+              <span>竖屏</span>
+            </label>
+          </div>
+          <p class="card__hint" id="layoutHint">竖版：宽 1080，高度随内容自适应。</p>
+        </div>
+
+        <div class="card">
+          <h3 class="card__title">状态</h3>
+          <div class="segmented segmented--block" role="radiogroup" aria-label="票根状态">
+            <label class="segmented__opt">
+              <input type="radio" name="ticketStatus" value="planning" checked />
+              <span>计划中</span>
+            </label>
+            <label class="segmented__opt">
+              <input type="radio" name="ticketStatus" value="completed" />
+              <span>标记已完成</span>
+            </label>
+          </div>
+          <p class="card__hint">只有主动标记「已完成」才会显示已完成；未下单不会被当成已消费。</p>
+        </div>
+
+        <div class="card card--order" id="orderCard">
+          <h3 class="card__title">这顿真的吃了吗</h3>
+          <p class="card__hint"><strong>本作品不会替你下单。</strong>订单需你在麦当劳 App / 小程序里完成后，再回来关联核对。</p>
+          <button type="button" class="btn btn--ghost btn--block" id="btnLinkOrder">关联我的麦当劳订单</button>
+          <div id="linkResult"></div>
+        </div>
+
+        <div class="card card--prefs">
+          <h3 class="card__title">保存这群人的口味</h3>
+          <p class="card__hint">逐人授权：只保存昵称与三档心愿，不含个人预算、订单与金额。可随时撤回。</p>
+          <div class="pref-consent" id="prefConsentList"></div>
+          <p class="inline-status" id="prefSaveHint">至少勾选 1 位成员才能保存。</p>
+          <button type="button" class="btn btn--primary btn--block" id="btnSavePrefs" disabled>保存偏好</button>
+          <p class="inline-status" id="prefSaveStatus" role="status" aria-live="polite"></p>
+        </div>
+
+        <div class="card card--privacy">
+          <h3 class="card__title">
+            <svg class="ico" aria-hidden="true"><use href="#i-lock"></use></svg>
+            默认不展示
+          </h3>
+          <ul class="privacy-list" id="hiddenFieldsList">
+            <li>订单号</li><li>门店详址</li><li>个人预算</li><li>个人分摊</li><li>实际支付金额</li>
+          </ul>
+          <p class="card__hint">本作品不自动下单、不领券、不支付；票根仅为计划记录。</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-foot">
+  <p>麦麦同席 · 多人协商点餐原型 · 价格来自麦当劳官方核价接口，页面不构成下单承诺。</p>
+  <button type="button" class="link-btn" id="footOpenDrawer" aria-controls="drawer" aria-expanded="false">数据说明与清理</button>
+</footer>
+
+<!-- ===== 设置抽屉 ===== -->
+<div class="drawer-scrim" id="drawerScrim" hidden></div>
+<aside class="drawer" id="drawer" aria-labelledby="drawerTitle" aria-modal="true" role="dialog" hidden>
+  <div class="drawer__head">
+    <h2 id="drawerTitle">数据说明</h2>
+    <button type="button" class="icon-btn" id="closeDrawer" aria-label="关闭设置">
+      <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+    </button>
+  </div>
+  <div class="drawer__body">
+    <div class="kv-list" id="drawerKv"></div>
+
+    <section class="drawer__block">
+      <h3>只读声明</h3>
+      <p>本作品不自动下单、不领券、不支付。确认方案只表示「保存为聚餐方案」，不代表已经下单或已经消费。</p>
+      <p>价格与优惠来自官方核价接口；失败时显示失败，不用估算值替代。</p>
+    </section>
+
+    <section class="drawer__block">
+      <h3>隐私</h3>
+      <p>票根默认隐藏订单号、门店详址、个人预算、个人分摊与实际支付金额。分享前可预览、改写昵称与选择展示字段。</p>
+    </section>
+
+    <section class="drawer__block">
+      <h3>已保存的口味偏好</h3>
+      <p class="muted">只有成员本人勾选同意后才会保存，只含昵称与三档心愿（不含个人预算）。删除即撤回授权，不可恢复。</p>
+      <div class="pref-group-list" id="prefGroupList"><p class="muted">加载中…</p></div>
+    </section>
+
+    <section class="drawer__block drawer__block--danger">
+      <h3>清除本地数据</h3>
+      <p class="muted">删除本机保存的聚餐、成员心愿、方案与票根记录。此操作不可撤销；已导出的图片不受影响。</p>
+      <div class="danger-actions">
+        <button type="button" class="btn btn--danger" id="btnCleanup">
+          <svg class="ico" aria-hidden="true"><use href="#i-trash"></use></svg>
+          清除本地数据
+        </button>
+      </div>
+    </section>
+  </div>
+</aside>
+
+<!-- ===== 订单关联弹层（只读核对） ===== -->
+<div class="sheet-scrim" id="orderSheetScrim" hidden></div>
+<section class="sheet" id="orderSheet" role="dialog" aria-modal="true" aria-labelledby="orderSheetTitle" hidden>
+  <div class="sheet__head">
+    <div class="sheet__head-text">
+      <h2 id="orderSheetTitle">关联我的麦当劳订单</h2>
+      <p>只读核对，不会下单、不会支付、不会修改订单。</p>
+    </div>
+    <button type="button" class="icon-btn" id="closeOrderSheet" aria-label="关闭订单列表">
+      <svg class="ico" aria-hidden="true"><use href="#i-x"></use></svg>
+    </button>
+  </div>
+  <div class="sheet__body">
+    <div class="inline-status" id="orderStatus" role="status" aria-live="polite"></div>
+    <div class="order-list" id="orderList"></div>
+    <div class="link-warn" id="linkWarnBox" hidden></div>
+  </div>
+</section>
+
+<!-- ===== 确认弹层 ===== -->
+<div class="modal-scrim" id="modalScrim" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <h2 class="modal__title" id="modalTitle">确认操作</h2>
+    <div class="modal__body" id="modalBody"></div>
+    <div class="modal__foot">
+      <button type="button" class="btn btn--ghost" id="modalCancel">取消</button>
+      <button type="button" class="btn btn--danger" id="modalOk">确认清除</button>
+    </div>
+  </div>
+</div>
+
+<div class="export-sheet" id="exportSheet" hidden>
+  <div class="export-sheet__scrim" id="exportSheetScrim"></div>
+  <div class="export-sheet__panel" role="dialog" aria-modal="true" aria-labelledby="exportSheetTitle">
+    <div class="export-sheet__head">
+      <h2 class="export-sheet__title" id="exportSheetTitle">导出效果</h2>
+      <button type="button" class="btn btn--ghost btn--sm" id="exportSheetClose">关闭</button>
+    </div>
+    <div class="export-sheet__body" id="exportSheetBody"></div>
+    <p class="export-sheet__hint">这是按当前版式真实导出的图片，与「下载图片」得到的文件完全一致。</p>
+  </div>
+</div>
+
+<div class="toast-root" id="toastRoot" aria-live="polite" aria-atomic="false"></div>
+
+<script src="ticket.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
