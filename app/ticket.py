@@ -330,7 +330,7 @@ def build_ticket(
 ) -> Dict[str, Any]:
     """把已确认的 party + plan 映射成票根数据。
 
-    输出结构见 work/agent-coordination/interfaces.md §4.1。
+    字段定义与脱敏口径见 docs/票根字段映射表.md。
     注意：这里逐字段新建 dict，绝不回传 pricing / allocation / store，
     因此 totalCents、shareCents、门店详址、订单号不会泄漏。
     """
