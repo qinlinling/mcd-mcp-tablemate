@@ -20,6 +20,43 @@
 - **参与成员**（通常 3—8 人）：想用结构化心愿（必须要 / 最好有 / 不要）代替长段文字，并看到自己的诉求被明确处理的人。
 - **分享对象**：聚餐成员及用户主动选择的外部受众——票根默认脱敏，分享由用户自己决定。
 
+## 运行
+
+前提：Python 3.10+（无需任何第三方包），以及可用的麦当劳 MCP token。
+
+```bash
+git clone https://github.com/qinlinling/mcd-mcp-tablemate.git
+cd mcd-mcp-tablemate
+
+# 1) 配置 token（二选一）
+#    a. 环境变量：set MCD_TOKEN=xxxxx（Windows）/ export MCD_TOKEN=xxxxx（macOS/Linux）
+#    b. 或写入 ~/.workbuddy/mcp.json 的 mcpServers.mcd-mcp.headers.Authorization
+
+# 2) 启动（无需 pip install，纯标准库）
+python run.py            # 默认 http://127.0.0.1:8848，端口占用会自动 +1
+```
+
+> 仓库根目录就是项目根目录，所有命令都在根目录执行。`docs/` 中少数文档写于开发工作区
+>（当时项目位于 `mmtx/` 子目录），其中出现的 `mmtx/xxx` 与这里的 `xxx` 指同一文件。
+
+浏览器打开 `http://127.0.0.1:8848` 即可。首页有「填入标准演示场景」按钮，一键填好 4 人示例。
+
+命令行自检：
+
+```bash
+python -c "from app.mcd_mcp import McdClient; c=McdClient(); print(c.health())"
+python tests/e2e_smoke.py            # 端到端联调（会真实调用 MCP 只读接口）
+python -m unittest discover -s tests -p "test_*.py"   # 单元测试（87 项）
+node tests/ui_smoke.mjs        # 前端主流程冒烟（需先装 jsdom）
+node tests/ui_p1_smoke.mjs     # 前端 P1 验收
+node tests/export_sizes.mjs    # 票根三版式导出尺寸
+node tests/screenshots.mjs     # 1440/390 双尺寸截图 + 溢出断言（输出到 docs/screenshots）
+```
+
+> 后 4 个是**开发期脚本**，需要 node 依赖（作品本身运行不需要）：
+> `npm i -D jsdom puppeteer-core canvas`，或设置 `MMTX_DEV_MODULES` 指向已有这些包的 `node_modules`。
+> 截图脚本还需要本机 Chromium 内核浏览器（Edge/Chrome），可用 `MMTX_BROWSER` 指定路径。
+
 ## 使用示例
 
 一条完整的标准演示路径（4 人聚餐，约 3 分钟）：
@@ -64,36 +101,6 @@
 | 5 | `workbuddy.md` | 非必须；参加 WorkBuddy 专项奖励时提交 | ✅ 已包含开发对话上下文 |
 
 补充：`mcp-config.example.json` 仅含环境变量占位符 `${MCD_TOKEN}`，不含任何真实凭证。
-
-## 运行
-
-前提：Python 3.10+（无需任何第三方包），以及可用的麦当劳 MCP token。
-
-```bash
-# 1) 确认 token 可读：默认从 ~/.workbuddy/mcp.json 的 mcpServers.mcd-mcp.headers.Authorization 读取
-#    也可以用环境变量覆盖：set MCD_TOKEN=xxxxx  （Windows）/ export MCD_TOKEN=xxxxx （macOS/Linux）
-
-cd mmtx
-python run.py            # 默认 http://127.0.0.1:8848，端口占用会自动 +1
-```
-
-浏览器打开 `http://127.0.0.1:8848` 即可。首页有「填入标准演示场景」按钮，一键填好 4 人示例。
-
-命令行自检：
-
-```bash
-python -c "from app.mcd_mcp import McdClient; c=McdClient(); print(c.health())"
-python tests/e2e_smoke.py            # 端到端联调（会真实调用 MCP 只读接口）
-python -m unittest discover -s tests -p "test_*.py"   # 单元测试（87 项）
-node tests/ui_smoke.mjs        # 前端主流程冒烟（需先装 jsdom）
-node tests/ui_p1_smoke.mjs     # 前端 P1 验收
-node tests/export_sizes.mjs    # 票根三版式导出尺寸
-node tests/screenshots.mjs     # 1440/390 双尺寸截图 + 溢出断言（输出到 docs/screenshots）
-```
-
-> 后 4 个是**开发期脚本**，需要 node 依赖（作品本身运行不需要）：
-> `npm i -D jsdom puppeteer-core canvas`，或设置 `MMTX_DEV_MODULES` 指向已有这些包的 `node_modules`。
-> 截图脚本还需要本机 Chromium 内核浏览器（Edge/Chrome），可用 `MMTX_BROWSER` 指定路径。
 
 ## 目录
 
