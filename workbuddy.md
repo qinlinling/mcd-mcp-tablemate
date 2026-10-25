@@ -12,7 +12,7 @@
 | 协作模式 | 主控智能体 + 3 个并行工作流智能体（多智能体编排） |
 | 开发周期 | 2026-10-24 — 2026-10-25（两个全天） |
 | 连接器 | 麦当劳 MCP（`https://mcp.mcd.cn`，Bearer 鉴权）+ Agent Mail |
-| 工作区 | `C:/Users/WIN/Desktop/workbuddy X McDonald/` |
+| 工作区 | 本地 WorkBuddy 工作区（项目初始位于其 `mmtx/` 子目录，发布时提升为仓库根） |
 
 ## 二、开发时间线（按会话）
 

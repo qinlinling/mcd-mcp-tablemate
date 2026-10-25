@@ -10,11 +10,44 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
 
-const req = createRequire('C:/Users/WIN/.workbuddy/binaries/node/workspace/');
-const puppeteer = req('puppeteer-core');
+import { pathToFileURL } from 'node:url';
+
+/** 开发期依赖（jsdom / puppeteer-core / canvas）不随作品发布，按下面顺序查找：
+ *  1) 仓库根 node_modules（推荐：在根目录 npm i -D jsdom puppeteer-core canvas）
+ *  2) 环境变量 MMTX_DEV_MODULES 指向的 node_modules
+ */
+const DEV_MODULES = process.env.MMTX_DEV_MODULES || path.join(process.cwd(), 'node_modules');
+
+function requireDev(name) {
+  const local = createRequire(import.meta.url);
+  try { return local(name); } catch (e) { /* 继续找开发目录 */ }
+  try {
+    return createRequire(pathToFileURL(path.join(DEV_MODULES, 'index.js')))(name);
+  } catch (e) {
+    throw new Error(
+      '缺少开发依赖 ' + name + '。请在仓库根执行：npm i -D jsdom puppeteer-core canvas，' +
+      '或设置环境变量 MMTX_DEV_MODULES 指向含该依赖的 node_modules。'
+    );
+  }
+}
+
+const puppeteer = requireDev('puppeteer-core');
 
 const BASE = process.env.MMTX_BASE || 'http://127.0.0.1:8848';
-const EDGE = process.env.MMTX_BROWSER || 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe';
+/** 浏览器路径：优先环境变量，其次常见安装位置（Windows Edge / Chrome，macOS Chrome） */
+function findBrowser() {
+  if (process.env.MMTX_BROWSER) return process.env.MMTX_BROWSER;
+  const candidates = [
+    'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
+    'C:/Program Files/Microsoft/Edge/Application/msedge.exe',
+    'C:/Program Files/Google/Chrome/Application/chrome.exe',
+    'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',
+    '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+  ];
+  for (const p of candidates) { if (fs.existsSync(p)) return p; }
+  throw new Error('找不到可用的 Chromium 内核浏览器，请设置环境变量 MMTX_BROWSER 指向 msedge.exe / chrome。');
+}
+const EDGE = findBrowser();
 const OUT = path.join(process.cwd(), 'docs', 'screenshots');
 fs.mkdirSync(OUT, { recursive: true });
 

@@ -12,17 +12,28 @@ import path from 'node:path';
 import { createRequire } from 'node:module';
 
 // jsdom 只装在开发机的全局工作区里，这里做一次宽松解析，避免为一次冒烟就在仓库里引依赖
-function loadJsdom() {
-  const req = createRequire(import.meta.url);
+import { pathToFileURL } from 'node:url';
+
+/** 开发期依赖（jsdom / puppeteer-core / canvas）不随作品发布，按下面顺序查找：
+ *  1) 仓库根 node_modules（推荐：在根目录 npm i -D jsdom puppeteer-core canvas）
+ *  2) 环境变量 MMTX_DEV_MODULES 指向的 node_modules
+ */
+const DEV_MODULES = process.env.MMTX_DEV_MODULES || path.join(process.cwd(), 'node_modules');
+
+function requireDev(name) {
+  const local = createRequire(import.meta.url);
+  try { return local(name); } catch (e) { /* 继续找开发目录 */ }
   try {
-    return req('jsdom');
+    return createRequire(pathToFileURL(path.join(DEV_MODULES, 'index.js')))(name);
   } catch (e) {
-    const fallback = process.env.JSDOM_REQUIRE_BASE ||
-      'C:/Users/WIN/.workbuddy/binaries/node/workspace/';
-    return createRequire(fallback)('jsdom');
+    throw new Error(
+      '缺少开发依赖 ' + name + '。请在仓库根执行：npm i -D jsdom puppeteer-core canvas，' +
+      '或设置环境变量 MMTX_DEV_MODULES 指向含该依赖的 node_modules。'
+    );
   }
 }
-const { JSDOM } = loadJsdom();
+
+const { JSDOM } = requireDev('jsdom');
 
 const BASE = process.env.MMTX_BASE || 'http://127.0.0.1:8848';
 const html = fs.readFileSync(path.join(process.cwd(), 'web', 'index.html'), 'utf8');
